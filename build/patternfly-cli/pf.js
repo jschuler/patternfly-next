@@ -90,6 +90,7 @@ program
       blueprintData
     );
 
+    // Update the CMS config yaml file
     let config = {};
     const yamlFile = path.join(`${PROJECT_DIR}/static/admin/config.yml`);
     try {
@@ -100,16 +101,7 @@ program
         }/docs/code.md`,
         label: blueprintData.namePascalized,
         name: blueprintData.namePascalized,
-        fields: [
-          {
-            label: 'Template Key',
-            name: 'templateKey',
-            widget: 'hidden',
-            default: 'about-page'
-          },
-          { label: 'Title', name: 'title', widget: 'string' },
-          { label: 'Body', name: 'body', widget: 'markdown' }
-        ]
+        fields: config.base.fields
       });
       console.log(config);
       fs.writeFileSync(yamlFile, yaml.safeDump(config), 'utf8', err => {

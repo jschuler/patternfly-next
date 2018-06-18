@@ -3,8 +3,8 @@ backend:
   repo: jschuler/patternfly-next
 media_folder: static/assets/images
 public_folder: /img
-base: &base
-  fields:
+base:
+  fields: &ref_0
     - label: Template Key
       name: templateKey
       widget: hidden
@@ -22,27 +22,31 @@ collections:
       - file: src/site/pages/accessibility-guide.md
         label: Accessibility
         name: accessibility
-        <<: *base
+        fields: *ref_0
       - file: src/site/pages/contribution.md
         label: Contribution
         name: contribution
-        <<: *base
+        fields: *ref_0
   - name: components
     label: Components
     files:
       - file: src/patternfly/components/Alert/docs/code.md
         label: Alert
         name: alert
-        <<: *base
+        fields: *ref_0
       - file: src/patternfly/components/Backdrop/docs/code.md
         label: Backdrop
         name: backdrop
-        <<: *base
+        fields: *ref_0
       - file: src/patternfly/components/Box/docs/code.md
         label: Box
         name: box
-        <<: *base
+        fields: *ref_0
       - file: src/patternfly/components/MyComponent/docs/code.md
         label: MyComponent
         name: MyComponent
-        <<: *base
+        fields: *ref_0
+      - file: src/patternfly/components/HolyMoly/docs/code.md
+        label: HolyMoly
+        name: HolyMoly
+        fields: *ref_0
