@@ -103,7 +103,6 @@ program
         name: blueprintData.namePascalized,
         fields: config.base.fields
       });
-      console.log(config);
       fs.writeFileSync(yamlFile, yaml.safeDump(config), 'utf8', err => {
         if (err) {
           console.log(err);

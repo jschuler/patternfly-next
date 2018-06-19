@@ -1,6 +1,6 @@
 ---
 templateKey: about-page
-title: `{{bemName}}`
+title: ``
 ---
 ## Overview
 
@@ -12,7 +12,7 @@ For example for buttons: Always add a modifier class to add color to the button.
 
 | Attribute | Applied To | Outcome |
 | -- | -- | -- |
-| `role` or `aria` | `{{bemName}}` |  accessibility notes. |
+| `role` or `aria` | `pf-c-sweet-component` |  accessibility notes. |
 
 
 ## Usage

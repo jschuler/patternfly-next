@@ -50,3 +50,15 @@ collections:
         label: HolyMoly
         name: HolyMoly
         fields: *ref_0
+      - file: src/patternfly/components/SweetComponent/docs/code.md
+        label: SweetComponent
+        name: SweetComponent
+        fields: *ref_0
+      - file: src/patternfly/components/SweetComponent2/docs/code.md
+        label: SweetComponent2
+        name: SweetComponent2
+        fields: *ref_0
+      - file: src/patternfly/components/SweetComponent3/docs/code.md
+        label: SweetComponent3
+        name: SweetComponent3
+        fields: *ref_0
