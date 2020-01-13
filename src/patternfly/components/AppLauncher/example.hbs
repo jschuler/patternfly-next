@@ -1,0 +1,68 @@
+{{#> app-launcher id="app-launcher-sections-dividers-icons-and-external-links" app-launcher--IsExpanded="true" app-launcher--IsGrouped="true"}}
+  {{#> app-launcher-menu}}
+    {{#> app-launcher-group}}
+      <ul>
+        <li>
+          {{#> app-launcher-menu-item app-launcher-menu-item--attribute='href="#"'}}
+            {{#> app-launcher-menu-item-icon}}
+              <img src="/assets/images/pf-logo-small.svg">
+            {{/app-launcher-menu-item-icon}}
+            Link not in group
+          {{/app-launcher-menu-item}}
+        </li>
+      </ul>
+    {{/app-launcher-group}}
+    {{#> app-launcher-separator app-launcher-separator--IsHr="true"}}{{/app-launcher-separator}}
+    {{#> app-launcher-group}}
+      {{#> app-launcher-group-title}}
+        Group 1
+      {{/app-launcher-group-title}}
+      <ul>
+        <li>
+          {{#> app-launcher-menu-item app-launcher-menu-item--modifier="pf-m-external" app-launcher-menu-item--attribute='href="#" target="_blank"'}}
+            {{#> app-launcher-menu-item-icon}}
+              <img src="/assets/images/pf-logo-small.svg" alt="">
+            {{/app-launcher-menu-item-icon}}
+            Group 1 link
+            {{> app-launcher-menu-item-external-icon}}
+          {{/app-launcher-menu-item}}
+        </li>
+        <li>
+          {{#> app-launcher-menu-item app-launcher-menu-item--modifier="pf-m-external" app-launcher-menu-item--attribute='href="#" target="_blank"'}}
+            {{#> app-launcher-menu-item-icon}}
+              <img src="/assets/images/pf-logo-small.svg" alt="">
+            {{/app-launcher-menu-item-icon}}
+            Group 1 link
+            {{> app-launcher-menu-item-external-icon}}
+          {{/app-launcher-menu-item}}
+        </li>
+        {{#> app-launcher-separator}}{{/app-launcher-separator}}
+      </ul>
+    {{/app-launcher-group}}
+    {{#> app-launcher-group}}
+      {{#> app-launcher-group-title}}
+        Group 2
+      {{/app-launcher-group-title}}
+      <ul>
+        <li>
+          {{#> app-launcher-menu-item app-launcher-menu-item--modifier="pf-m-external" app-launcher-menu-item--attribute='href="#" target="_blank"'}}
+            {{#> app-launcher-menu-item-icon}}
+              <img src="/assets/images/pf-logo-small.svg" alt="">
+            {{/app-launcher-menu-item-icon}}
+            Group 2 link
+            {{> app-launcher-menu-item-external-icon}}
+          {{/app-launcher-menu-item}}
+        </li>
+        <li>
+          {{#> app-launcher-menu-item app-launcher-menu-item--modifier="pf-m-external" app-launcher-menu-item--attribute='href="#" target="_blank"'}}
+            {{#> app-launcher-menu-item-icon}}
+              <img src="/assets/images/pf-logo-small.svg" alt="">
+            {{/app-launcher-menu-item-icon}}
+            Group 2 link
+            {{> app-launcher-menu-item-external-icon}}
+          {{/app-launcher-menu-item}}
+        </li>
+      </ul>
+    {{/app-launcher-group}}
+  {{/app-launcher-menu}}
+{{/app-launcher}}
