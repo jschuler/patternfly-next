@@ -1,6 +1,7 @@
 const path = require('path');
-const { src, dest, series, watch } = require('gulp');
+const { src, dest, series, watch, task } = require('gulp');
 const rename = require('gulp-rename');
+const handlebars = require('gulp-compile-handlebars');
 const sass = require('node-sass');
 const through2 = require('through2');
 const postcss = require('gulp-postcss');
@@ -13,6 +14,7 @@ const generateIcons = require('./src/icons/generateIcons.js');
 const convertForIE = require('./build/npm-scripts/ie-convert-all.js');
 const stylelint = require('stylelint');
 const sassGraph = require('sass-graph');
+// const a11yTester = require('./a11y.js');
 
 const pficonFontName = 'pficon';
 const config = {
@@ -120,6 +122,7 @@ function compileSASS0(srcFiles) {
         );
         fs.ensureFileSync(outPath);
         fs.writeFileSync(outPath, cssString);
+        console.log(`saved compiled css to ${outPath}`);
         cb2(null, chunk);
       })
     )
@@ -170,6 +173,7 @@ function watchSASS() {
     const toCompile = gatsbyCSSFiles.filter(file => dependents.includes(file));
     compileSASS0(src(toCompile))
     console.log('Compiled', toCompile.map(file => path.relative(__dirname, file)).join(' '));
+    // a11yTester.getResults();
   }
 
   watcher.on('change', compileGatsbySASS);
@@ -209,6 +213,27 @@ function pfIcons() {
 
 function buildIE() {
   return convertForIE();
+}
+
+function convertHbsToHtml() {
+  return task('compile-handlebars', function() {
+    var templateData = {
+        data: 'Kaanon'
+    },
+    options = {
+        batch : ['./views/partials'],
+        helpers : {
+            capitals : function(str){
+                return str.toUpperCase();
+            }
+        }
+    }
+
+    return gulp.src('views/home.handlebars')
+        .pipe(handlebars(templateData, options))
+        .pipe(rename('home.html'))
+        .pipe(gulp.dest('build'));
+  });
 }
 
 module.exports = {
