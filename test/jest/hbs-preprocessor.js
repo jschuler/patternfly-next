@@ -25,6 +25,6 @@ module.exports = {
       const hbsInstance = createHandlebars(hbsNodes);
       const html = hbsInstance.compile(\`${src}\`)({});
       return html;
-    `
+    `;
   }
 };

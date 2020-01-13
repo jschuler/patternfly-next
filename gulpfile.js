@@ -67,65 +67,55 @@ function minifyCSS() {
 }
 
 function compileSASS0(srcFiles) {
-  return srcFiles
-    .pipe(
-      through2.obj((chunk, _, cb2) => {
-        let cssString
-        let scss = chunk.contents.toString();
-        const relativePath = path.relative(
-          path.join(chunk._cwd, '/src/patternfly'),
-          chunk.history[0]
-        );
-        const numDirectories = relativePath.includes('/')
-          ? relativePath.match(/\//g).length
-          : 0;
-        // This hack is to not include sass-utilities/placeholders.scss CSS more than once
-        // in our production patternfly.css BUT still be able to compile individual SCSS files.
-        // As soon as node-sass is updated to a libsass version that supports @use rule, we should
-        // `@use "../../sass-utilities/all";`
+  return srcFiles.pipe(
+    through2.obj((chunk, _, cb2) => {
+      let cssString;
+      let scss = chunk.contents.toString();
+      const relativePath = path.relative(path.join(chunk._cwd, '/src/patternfly'), chunk.history[0]);
+      const numDirectories = relativePath.includes('/') ? relativePath.match(/\//g).length : 0;
+      // This hack is to not include sass-utilities/placeholders.scss CSS more than once
+      // in our production patternfly.css BUT still be able to compile individual SCSS files.
+      // As soon as node-sass is updated to a libsass version that supports @use rule, we should
+      // `@use "../../sass-utilities/all";`
+      if (numDirectories > 0) {
+        scss = `@import "${'../'.repeat(numDirectories)}sass-utilities/all";\n${scss}`;
+      }
+
+      try {
+        const css = sass.renderSync({
+          // Pass filename for import resolution. Contents are not compiled.
+          file: chunk.history[0],
+          // Contents to compile
+          data: scss
+        });
+        cssString = css.css.toString();
+        // TODO: Cleaner way to to do relative image assets in component CSS
         if (numDirectories > 0) {
-          scss = `@import "${'../'.repeat(numDirectories)}sass-utilities/all";\n${scss}`;
+          cssString = cssString.replace(/.\/assets\/images/g, `${'../'.repeat(numDirectories)}assets/images`);
         }
 
-        try {
-          const css = sass.renderSync({
-            // Pass filename for import resolution. Contents are not compiled.
-            file: chunk.history[0],
-            // Contents to compile
-            data: scss
+        stylelint
+          .lint({
+            files: chunk.history[0],
+            formatter: 'string'
+          })
+          .then(data => {
+            if (data.errored) {
+              console.error(data.output);
+            }
           });
-          cssString = css.css.toString();
-          // TODO: Cleaner way to to do relative image assets in component CSS
-          if (numDirectories > 0) {
-            cssString = cssString.replace(/.\/assets\/images/g, `${'../'.repeat(numDirectories)}assets/images`);
-          }
+      } catch (error) {
+        console.error(`Problem in ${path.relative(__dirname, chunk.history[0])}: ${error}`);
+      }
 
-          stylelint
-            .lint({
-              files: chunk.history[0],
-              formatter: 'string'
-            })
-            .then(data => {
-              if (data.errored) {
-                console.error(data.output);
-              }
-            });
-        } catch (error) {
-          console.error(`Problem in ${path.relative(__dirname, chunk.history[0])}: ${error}`);
-        }
-
-        // Not kosher, but prevents path problems with watchSASS
-        const outPath = path.join(
-          chunk._cwd,
-          'dist',
-          relativePath.replace(/\.scss$/, '.css')
-        );
-        fs.ensureFileSync(outPath);
-        fs.writeFileSync(outPath, cssString);
-        console.log(`saved compiled css to ${outPath}`);
-        cb2(null, chunk);
-      })
-    )
+      // Not kosher, but prevents path problems with watchSASS
+      const outPath = path.join(chunk._cwd, 'dist', relativePath.replace(/\.scss$/, '.css'));
+      fs.ensureFileSync(outPath);
+      fs.writeFileSync(outPath, cssString);
+      console.log(`saved compiled css to ${outPath}`);
+      cb2(null, chunk);
+    })
+  );
 }
 
 function compileSASS() {
@@ -142,11 +132,9 @@ function watchSASS() {
   const graph = sassGraph.parseDir('./src/patternfly').index;
 
   let result;
-  while(result = regex.exec(fileContents)) {
+  while ((result = regex.exec(fileContents))) {
     // Map CSS require to its SASS source file
-    const srcFile = result[1]
-      .replace('./dist/', path.join(__dirname, '/src/patternfly/'))
-      .replace(/.css$/, '.scss');
+    const srcFile = result[1].replace('./dist/', path.join(__dirname, '/src/patternfly/')).replace(/.css$/, '.scss');
     gatsbyCSSFiles.push(srcFile);
   }
 
@@ -156,12 +144,11 @@ function watchSASS() {
     if (!graphNode) {
       return acc;
     }
-    graphNode.importedBy
-      .forEach(file => {
-        acc.push(file);
-        visit(graph[file], acc);
-      });
-    
+    graphNode.importedBy.forEach(file => {
+      acc.push(file);
+      visit(graph[file], acc);
+    });
+
     return acc;
   }
 
@@ -171,7 +158,7 @@ function watchSASS() {
     const graphNode = graph[fullPath];
     const dependents = visit(graphNode, [fullPath]);
     const toCompile = gatsbyCSSFiles.filter(file => dependents.includes(file));
-    compileSASS0(src(toCompile))
+    compileSASS0(src(toCompile));
     console.log('Compiled', toCompile.map(file => path.relative(__dirname, file)).join(' '));
     // a11yTester.getResults();
   }
@@ -216,23 +203,24 @@ function buildIE() {
 }
 
 function convertHbsToHtml() {
-  return task('compile-handlebars', function() {
-    var templateData = {
+  return task('compile-handlebars', () => {
+    let templateData = {
         data: 'Kaanon'
-    },
-    options = {
-        batch : ['./views/partials'],
-        helpers : {
-            capitals : function(str){
-                return str.toUpperCase();
-            }
+      },
+      options = {
+        batch: ['./views/partials'],
+        helpers: {
+          capitals(str) {
+            return str.toUpperCase();
+          }
         }
-    }
+      };
 
-    return gulp.src('views/home.handlebars')
-        .pipe(handlebars(templateData, options))
-        .pipe(rename('home.html'))
-        .pipe(gulp.dest('build'));
+    return gulp
+      .src('views/home.handlebars')
+      .pipe(handlebars(templateData, options))
+      .pipe(rename('home.html'))
+      .pipe(gulp.dest('build'));
   });
 }
 

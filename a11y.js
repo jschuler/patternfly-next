@@ -1,9 +1,10 @@
-const AAT = require("@ibma/aat");
+const AAT = require('@ibma/aat');
 const path = require('path');
 const fse = require('fs-extra');
 const glob = require('glob');
 const { createHandlebars } = require('gatsby-theme-patternfly-org/helpers/createHandlebars');
 const { extractExamples } = require('gatsby-theme-patternfly-org/helpers/extractExamples');
+
 const mdx = require(`@mdx-js/mdx`);
 
 const pfCss = path.join('./dist/patternfly.css');
@@ -27,11 +28,11 @@ const hbsFiles = glob.sync('**/*.hbs', {
 // -> in each loop iteration: const examples = extractExamples(mdxAST, hbsInstance, fileRelativePath);
 // now for each md examples file, we have an array of HTML examples?
 
-let individualExamples = [];
+const individualExamples = [];
 
 function parseAllMd() {
-  let mdExamples = [];
-  let hbsNodes = [];
+  const mdExamples = [];
+  const hbsNodes = [];
   /*
   {
     "fields": {
@@ -75,7 +76,7 @@ function parseAllMd() {
       name,
       file,
       example
-    })
+    });
   });
 
   for (let i = 0; i < mdExamples.length; i++) {
@@ -95,7 +96,7 @@ function parseAllMd() {
 async function getResults() {
   console.log(`length: ${individualExamples.length}`);
   for (let i = 0; i < individualExamples.length; i++) {
-    let failures = [];
+    const failures = [];
     let errors = 0;
     // const result = await AAT.getCompliance(`file://${input}`, 'my test');
     // const result = await AAT.getCompliance('<html><img src="smiley.gif" height="42" width="42"></html>', 'my test');
@@ -104,7 +105,8 @@ async function getResults() {
     // console.log();
     // console.log(example);
     // console.log();
-    const result = await AAT.getCompliance(`
+    const result = await AAT.getCompliance(
+      `
       <html lang="en">
         <head>
           <style>
@@ -119,16 +121,18 @@ async function getResults() {
           <div role="main">${exampleHtml}</div>
         </body>
       </html>
-      `, `${mdFile} > ${exampleName}`);
+      `,
+      `${mdFile} > ${exampleName}`
+    );
     if (result) {
       if (AAT.assertCompliance(result.report) === 0) {
-          console.log(`${i + 1}/${individualExamples.length} Passed:`, `${mdFile} > ${exampleName}`);
+        console.log(`${i + 1}/${individualExamples.length} Passed:`, `${mdFile} > ${exampleName}`);
       } else {
-          failures.push({
-              file: `${mdFile} > ${exampleName}`,
-              report: result.report
-          });
-          console.log(`${i + 1}/${individualExamples.length} Failed:`, `${mdFile} > ${exampleName}`);
+        failures.push({
+          file: `${mdFile} > ${exampleName}`,
+          report: result.report
+        });
+        console.log(`${i + 1}/${individualExamples.length} Failed:`, `${mdFile} > ${exampleName}`);
       }
     } else {
       ++errors;
@@ -137,17 +141,17 @@ async function getResults() {
 
     if (failures.length > 0) {
       console.log();
-      console.log("Failing scan details:");
+      console.log('Failing scan details:');
       console.log();
       for (const fail of failures) {
-          console.log(AAT.stringifyResults(fail.report));
+        console.log(AAT.stringifyResults(fail.report));
       }
     }
     console.log();
     // console.log(`${rptInputFiles.length-failures.length-errors} of ${rptInputFiles.length} passed.`)
     await AAT.close();
     if (failures.length !== 0 || errors !== 0) {
-        process.exitCode = 1;
+      process.exitCode = 1;
     }
   }
 }
@@ -157,4 +161,4 @@ getResults();
 
 module.exports = {
   getResults
-}
+};

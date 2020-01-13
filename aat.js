@@ -6,7 +6,7 @@ module.exports = {
 
   // optional - Specify one or many policies to scan.
   // Run `npx aat archives` for a list of valid ruleArchive ids and policy ids
-  policies: [ "IBM_Accessibility"],
+  policies: ['IBM_Accessibility'],
 
   // optional - Specify one or many violation levels on which to fail the test
   //            i.e. If specified violation then the testcase will only fail if
@@ -14,7 +14,7 @@ module.exports = {
   // i.e. failLevels: ["violation"]
   // i.e. failLevels: ["violation","potential violation"] or refer to below as a list
   // Default: ["violation","potential violation"]
-  failLevels: [ "violation" ],
+  failLevels: ['violation'],
 
   // optional - Specify one or many violation levels which should be reported
   //            i.e. If specified violation then in the report it would only contain
@@ -22,34 +22,25 @@ module.exports = {
   // i.e. reportLevels: ["violation"]
   // Valid values: violation, potentialviolation, recommendation, potentialrecommendation, manual
   // Default: ["violation","potential violation"]
-  reportLevels: [
-      "violation",
-      "potentialviolation",
-      "recommendation",
-      "potentialrecommendation",
-      "manual"
-  ],
+  reportLevels: ['violation', 'potentialviolation', 'recommendation', 'potentialrecommendation', 'manual'],
 
   // Optional - Which type should the results be outputted to
   // Valid values: json, csv
   // Default: json
-  outputFormat: [ "json" ],
+  outputFormat: ['json'],
 
   // Optional - Specify labels that you would like associated to your scan
   //
   // i.e.
   //   label: ["Firefox","master","V12","Linux"]
   // Default: N/A
-  label: [
-      "Cucumber",
-      "Demo"
-  ],
+  label: ['Cucumber', 'Demo'],
 
   // optional - Where the scan results should be saved.
   // Default: results
-  outputFolder: "results",
+  outputFolder: 'results',
 
   // optional - Where the baseline results should be loaded from
   // Default: baselines
-  baselineFolder: "baselines",
-}
+  baselineFolder: 'baselines'
+};
